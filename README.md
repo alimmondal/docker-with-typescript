@@ -1,6 +1,86 @@
 # docker-with-typescript
 
+# Bind Mount, Dev Container & Ts Node Dev Cheat Sheet
+
+NotionLink: https://find-saminravi99.notion.site/Bind-Mount-Dev-Container-Ts-Node-Dev-Cheat-Sheet-117c48b8ac8c804aabb5ed0f09bc69a9
+
+## Bind Mound Syntax For
+
+<aside>
+💡
+
+For Git Bash
+
+```jsx
+docker run -p 5000:5000 --name ts-container -w //app -v ts-docker-logs://app/logs -v "//$(pwd)"://app/ -v //app/node_modules --rm ts-docker
+```
+
+</aside>
+
+<aside>
+💡
+
+For Powershell
+
+```jsx
+docker run -p 5000:5000 --name ts-container -w //app -v ts-docker-logs://app/logs -v "${PWD}://app" -v //app/node_modules --rm ts-docker
+```
+
+</aside>
+
+<aside>
+💡
+
+For CMD
+
+```jsx
+docker run -p 5000:5000 --name ts-container -w //app -v ts-docker-logs://app/logs -v "%cd%"://app/ -v //app/node_modules --rm ts-docker
+```
+
+</aside>
+
+ts-node-dev command for Docker Container
+
+<aside>
+💡
+
+ts-node-dev --respawn --transpile-only --poll src/server.ts
+
+</aside>
+
+1. First Open A .devcontainer folder in the root of the project
+2. Inside the .devcontainer folder open a file named devcontainer.json and paste the following code
+3. Change the json name, container names and file directories according to your project
+
+```jsx
+{
+  "name": "ts-container",
+  "image": "node:20",
+  "workspaceFolder": "/app",
+  "mounts": [
+    // Bind mount for your local project
+    "source=/c/Projects/next-level/Docker/docker-with-typescipt-backend,target=/app,type=bind",
+
+    // Named volume for logs (similar to: -v ts-docker-logs://app/logs)
+    "source=ts-docker-logs,target=/app/logs,type=volume",
+
+    // Anonymous volume for node_modules (similar to: -v //app/node_modules)
+    "target=/app/node_modules,type=volume"
+  ],
+  "runArgs": [
+    "--name",
+    "ts-container",
+    "-p",
+    "5000:5000",
+    "--rm" // Automatically remove the container after exiting VS Code
+  ],
+  "postCreateCommand": "npm install"
+}
+```
+
 # Docker Cheat Sheet
+
+notion-Link: https://find-saminravi99.notion.site/Docker-Cheat-Sheet-10dc48b8ac8c80b79f73ece2abfc6841
 
 ### **Getting Started with Docker**
 
@@ -191,14 +271,18 @@
 
 1.  **Create a Dockerfile**:
     Basic structure:
-        ```
-        FROM <base-image>
-        MAINTAINER <your-name>
-        COPY <source> <destination>
-        RUN <command>
-        CMD ["<executable>"]
+
+    ````
+    FROM <base-image>
+    MAINTAINER <your-name>
+    COPY <source> <destination>
+    RUN <command>
+    CMD ["<executable>"]
 
         ```
+
+    ````
+
 2.  **Build an Image from a Dockerfile**:
 
     ```bash
@@ -251,16 +335,21 @@
    ```
 
 5. **Docker Compose**:
+
    - **Start Services**:
+
      ```bash
      docker-compose up
 
      ```
+
    - **Stop Services**:
+
      ```bash
      docker-compose down
 
      ```
+
 6. **Scale Services**:
 
    ```bash
